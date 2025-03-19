@@ -61,6 +61,25 @@ function validateCreateRequest(req,res,next){
     }
     next();
 }
+
+function validateUpdateSeatsRequests(req,res,next){
+    if(!req.params.id){
+        ErrorResponse.message="something went wrong while updating flight";
+        ErrorResponse.error={message:"FlightId not found int the incoming request in the correct form"};
+        return res.status(StatusCodes.BAD_REQUEST).json({
+           ErrorResponse
+        })
+    }
+    if(!req.body.seats){
+        ErrorResponse.message="something went wrong while updating seats";
+        ErrorResponse.error={message:"Seats not found in the upcoming request int the correct form"};
+        return res.status(StatusCodes.BAD_REQUEST).json({
+           ErrorResponse
+        })
+    }
+    next();
+}
 module.exports={
-    validateCreateRequest: validateCreateRequest
+    validateCreateRequest: validateCreateRequest,
+    validateUpdateSeatsRequests:validateUpdateSeatsRequests
 }
