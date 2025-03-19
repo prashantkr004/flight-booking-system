@@ -1,6 +1,8 @@
 const CrudRepository= require('./crud-repository');
 const {Sequelize}=require('sequelize');
 const {Flight,Airplane,Airport,City}= require('../models');
+const db=require('../models');
+const {addRowLockOnFlights}  =require('./queries');
 class FlightRepository extends CrudRepository{
     constructor(){
         super(Flight);
@@ -16,9 +18,9 @@ class FlightRepository extends CrudRepository{
             },{
                model:Airport,
                required:true,
-               as:'Departue_airport',
+               as:'departure_airport',
                on:{
-                  col1:Sequelize.where(Sequelize.col('Flight.departureAirportId'),'=',Sequelize.col('Departue_airport.code'))
+                  col1:Sequelize.where(Sequelize.col('Flight.departureAirportId'),'=',Sequelize.col('departure_airport.code'))
                },
                include:[{
                     model:City,
@@ -27,9 +29,9 @@ class FlightRepository extends CrudRepository{
             },{
                 model:Airport,
                 required:true,
-                as:'Arrival_airport',
+                as:'arrival_airport',
                 on:{
-                   col1:Sequelize.where(Sequelize.col('Flight.arrivalAirportId'),'=',Sequelize.col('Arrival_airport.code'))
+                   col1:Sequelize.where(Sequelize.col('Flight.arrivalAirportId'),'=',Sequelize.col('arrival_airport.code'))
                 } ,
                 include:[{
                     model:City,
@@ -41,16 +43,24 @@ class FlightRepository extends CrudRepository{
     }
 
     async updateRemainingSeats(flightId,seats,dec=true){
-        const flight=await Flight.findByPk(flightId);
-        if(parseInt(dec)){
-
-             const response=await flight.decrement('totalSeats',{by:seats});
-             return response;
+        const transaction=await db.sequelize.transaction();
+        try{
+            await db.sequelize.query(addRowLockOnFlights(flightId));
+            const flight=await Flight.findByPk(flightId);
+            if(+dec){
+                 const response=await flight.decrement('totalSeats',{by:seats},{transaction:transaction});
+            }
+            else{
+                const response=await flight.increment('totalSeats',{by:seats},{transaction:transaction});
+            }
+            await transaction.commit();
+            return flight;
         }
-        else{
-            const response=await flight.increment('totalSeats',{by:seats});
-            return response;
+        
+        catch(error){
+              await transaction.rollback();
+              throw error
+           }
         }
-    }
 }
 module.exports=FlightRepository;

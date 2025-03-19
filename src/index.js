@@ -4,7 +4,6 @@ const apiRoutes=require('./routes');
 const app= express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-console.log("mainfile");
 app.use('/api',apiRoutes);
 
 app.listen(serverConfig.PORT,()=>{

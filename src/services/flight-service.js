@@ -24,6 +24,7 @@ async function createFlight(data){
 }
 }
 async function getAllFlights(query){
+    console.log(query.trips);
     let customfilter={};
     let sortFilter=[];
     if(query.trips){
