@@ -17,6 +17,22 @@ async function createBooking(req,res){
            res.send("internal error: " + err.message);
     }
 }
+async function makePayment(req,res){
+  try{
+        const response=await BookingService.makePayment({
+          totalcost:req.body.totalcost,
+          userId:req.body.userId,
+          bookingId:req.body.bookingId
+        });
+        SuccessResponse.data=response;
+        return res.status(StatusCodes.OK).json(SuccessResponse);
+  }
+  catch(err){
+         res.send("internal error: " + err.message);
+  }
+}
+
 module.exports={
-    createBooking:createBooking
+    createBooking:createBooking,
+    makePayment:makePayment
 }
