@@ -44,6 +44,10 @@ class BookingRepository extends CrudRepository{
                     status:{
                         [Op.ne]:'booked'
                     }
+                   },{
+                    status:{
+                        [Op.ne]:'cancelled'
+                    }
                    }
                 ]
             }
