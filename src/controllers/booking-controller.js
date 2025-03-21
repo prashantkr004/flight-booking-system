@@ -8,7 +8,7 @@ async function createBooking(req,res){
           const response=await BookingService.createBooking({
             flightId:req.body.flightId,
             userId:req.body.userId,
-            noOfSeats:req.body.noOfSeats
+            noOfseats:req.body.noOfseats
           });
           SuccessResponse.data=response;
           return res.status(StatusCodes.OK).json(SuccessResponse);
