@@ -11,59 +11,59 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Airplane,{
+      this.belongsTo(models.Airplane, {
         foreignKey: 'airplaneId',
-        as:'airplane_detail'
+        as: 'airplaneDetail'
       });
-      this.belongsTo(models.Airport,{
+      this.belongsTo(models.Airport, {
         foreignKey: 'departureAirportId',
-        as:'departure_airport',
-      })
-      this.belongsTo(models.Airport,{
+        as: 'departureAirport',
+      });
+      this.belongsTo(models.Airport, {
         foreignKey: 'arrivalAirportId',
-        as:'arrival_airport',
-      })
+        as: 'arrivalAirport',
+      });
     }
   }
   Flight.init({
-    flightNumber:{
-      type:DataTypes.STRING,
-      allowNull:false,
+    flightNumber: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    airplaneId:{
+    airplaneId: {
       type: DataTypes.INTEGER,
-      allowNull:false,
+      allowNull: false,
     },
-    departureAirportId:{
+    departureAirportId: {
       type: DataTypes.STRING,
-      allowNull:false,
+      allowNull: false
     },
-    arrivalAirportId:{
+    arrivalAirportId: {
       type: DataTypes.STRING,
-      allowNull:false,
+      allowNull: false
     },
-    arrivalTime:{
+    arrivalTime: {
       type: DataTypes.DATE,
-      allowNull:false,
+      allowNull: false
     },
-    departureTime:{
-        type: DataTypes.DATE,
-        allowNull:false,
+    departureTime: {
+      type: DataTypes.DATE,
+      allowNull: false
     },
-    price:{
+    price: {
       type: DataTypes.INTEGER,
-      allowNull:false,
+      allowNull: false
     },
-    boardingGate:{
-      type:DataTypes.STRING,
+    boardingGate: {
+      type: DataTypes.STRING
     },
-    totalSeats: {
+    totalSeats: { // total remaining seats
       type: DataTypes.INTEGER,
-      allowNull:false,
+      allowNull: false
     },
   }, {
     sequelize,
-    modelName:'Flight',
+    modelName: 'Flight',
   });
   return Flight;
 };

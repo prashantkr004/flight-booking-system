@@ -3,10 +3,10 @@ const {StatusCodes}=require('http-status-codes');
 const {SuccessResponse,ErrorResponse}=require('../utils/common');
 
 async function createFlight(req,res){
+  console.log(req.body);
     try{
           const flight=await FlightService.createFlight({
             flightNumber:req.body.flightNumber,
-            code:req.body.code,
             airplaneId:req.body.airplaneId,
             departureAirportId:req.body.departureAirportId,
             arrivalAirportId:req.body.arrivalAirportId,
