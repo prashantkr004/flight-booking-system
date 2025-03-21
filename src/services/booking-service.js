@@ -35,6 +35,25 @@ async function createBooking(data) {
     }
 }
 
+async function cancelBooking(data){
+    const transaction=await db.sequelize.transaction();
+    try{
+       const bookingDetails=await bookingRepository.get(data.bookingId,transaction);
+       if(bookingDetails. status=='cancelled'){
+           await transaction.commit();
+           return true;
+       }
+       await update.updateRemainingSeats(bookingDetails.flightId, Number(bookingDetails.noOfseats), false, transaction);
+       await bookingRepository.update(data.bookingId,{status:'cancelled'},transaction);
+       await transaction.commit();
+
+    }
+    catch(error){
+         await transaction.rollback();
+         throw error;
+    }
+}
+
 async function makePayment(data){
     const transaction = await db.sequelize.transaction();
     try{
@@ -45,7 +64,7 @@ async function makePayment(data){
         const bookingtime=new Date(bookingDetails.createdAt);
         const currenttime=new Date();
         if(currenttime-bookingtime>300000){
-            await bookingRepository.update(data.bookingId,{status:'cancelled'},transaction);
+            await cancelBooking(data);
             throw new AppError('The time of payment is passed', StatusCodes.BAD_REQUEST);
         }
         if(bookingDetails.totalcost!=data.totalcost){
